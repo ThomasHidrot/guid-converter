@@ -1,18 +1,10 @@
-﻿@page "/counter"
+﻿@page "/info"
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>info</PageTitle>
 
-<h1>Counter</h1>
+<h1>Informations</h1>
 
-<p role="status">Current count: @currentCount</p>
+This converter is a personal project to discover Blazor Web assembly.
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+You can find the source code on GitHub: <a href="https://github.com/ThomasHidrot/guid-converter">https://github.com/ThomasHidrot/guid-converter</a>
 
-@code {
-    private int currentCount = 0;
-
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
-}
