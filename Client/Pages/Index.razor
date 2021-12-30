@@ -1,9 +1,64 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Guid converter</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Guid converter</h1>
 
-Welcome to your new app.
+<input id="guid-label" @bind-value="guidLabel" />
+<button class="btn btn-primary" @onclick="ConvertGuid">Convert</button>
+<button class="btn btn-primary" @onclick="GenerateGuid">Generate</button>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<p role="status">.NET guid: @netGuidLabel</p>
+<p role="status">Oracle guid: @oracleGuidLabel</p>
+
+
+@code {
+	private string? guidLabel;
+	private string? netGuidLabel;
+	private string? oracleGuidLabel;
+
+	private void ConvertGuid()
+	{
+		if (String.IsNullOrEmpty(guidLabel))
+		{
+			return;
+		}
+
+		if (guidLabel.Contains("-") && Guid.TryParse(guidLabel, out Guid netguid))
+		{
+			netGuidLabel = netguid.ToString();
+			oracleGuidLabel = BitConverter.ToString(netguid.ToByteArray()).Replace("-", "");
+			return;
+		}
+
+		if (guidLabel.Length < 16)
+		{
+			return;
+		}
+
+		byte[] bytes = ParseLabelToHex(guidLabel);
+
+		netguid = new Guid(bytes);
+		netGuidLabel = netguid.ToString();
+		oracleGuidLabel = guidLabel;
+	}
+
+	private void GenerateGuid()
+	{
+		Guid currentguid = Guid.NewGuid();
+		netGuidLabel = currentguid.ToString();
+		oracleGuidLabel = BitConverter.ToString(currentguid.ToByteArray()).Replace("-", "");
+	}
+
+	private byte[] ParseLabelToHex(string guidLabel)
+	{
+		byte[] hex = new byte[guidLabel.Length / 2];
+
+		for (int i = 0; i < hex.Length; i++)
+		{
+			hex[i] = Convert.ToByte(guidLabel.Substring(i * 2, 2), 16);
+		}
+
+		return hex;
+	}
+}
